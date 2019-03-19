@@ -1,0 +1,108 @@
+<html>
+  <head>
+    <title>
+      Example
+    </title>
+  </head>
+  <body>
+    <div>
+      <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+        <input type="file" name="my_image" />
+        <select name="task">
+            <option value="Normal Image">Get normal uploaded image</option>
+            <option value="image-to-gray">Convert image to grayScale</option>
+            <option value="otsu">Convert Image to binary with alhoritm otsu</option>
+            <option value="contrast">Add contrast to image</option>
+            <option value="salt_and_pepper">Add SALT and Peper nozie to image</option>
+            <option value="gauss-noize">Add gauss noize to image (use power)</option>
+            <option value="brightness">Use power to control brightness (use power)</option>
+            <option value="zoom">Zoom image (use power for up or down)</option>
+            <option value="type-mask">Choose type mask for image</option>
+            <option value="previtta">Previtta no linear contrast mask</option>
+            <option value="sobelya">Sobelya no linear contrast mask</option>
+            <option value="robertsa">Robertsa no linear contrast mask</option>
+            <option value="median">Median filter</option>
+        </select>
+        <input type="text" name="power" placeholder="Power" width="10" style="display:none">
+        <select name="mask" style="display: none">
+            <option value="high-frequency">High Frequency mask</option>
+            <option value="low-frequency">Low Frequency mask</option>
+            <option value="gaussian-blur">Gaussian blur mask</option>
+            <option value="embossing">Embossing mask</option>
+            <option value="vertical-linear">Vaertical-linear mask</option>
+            <option value="horizontal-linear">Horizontal-linear mask</option>
+            <option value="diagonal">Diagonal mask</option>
+            <option value="laplasa">Laplasa mask</option>
+        </select>
+        <select name="depth-mask" style="display: none">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="7">7</option>
+        </select>
+        <input type="submit" value="Upload" />
+      </form>
+    </div>
+    <div>
+      <img src="{{ image }}" alt="">
+    </div>
+    <script
+			  src="http://code.jquery.com/jquery-3.3.1.slim.min.js"
+			  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+			  crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function() {
+        showPowerInput($('select[name="task"]').val());
+        $('select[name="task"]').on('change', function(e) {
+          showPowerInput($(this).val());
+        });
+        function showPowerInput(val) {
+          switch(val) {
+            case 'gauss-noize':
+            case 'brightness':
+            case 'zoom':
+              $('input[name="power"]').css({'display': 'inline-block'}).addClass('active');
+              $('select[name="mask"]').css({'display': 'none'}).removeClass('active');
+              $('select[name="depth-mask"]').css({'display': 'none'}).removeClass('active');              
+              break;
+            case 'type-mask':
+              $('select[name="mask"]').css({'display': 'inline-block'}).addClass('active');
+              switch($('select[name="mask"].active').val()) {
+                case 'high-frequency':
+                case 'low-frequency':
+                case 'gaussian-blur':
+                  $('select[name="depth-mask"]').css({'display': 'inline-block'}).addClass('active');
+                  break;
+                default:
+                $('select[name="depth-mask"]').css({'display': 'none'}).removeClass('active');
+              }
+              break;
+            default:
+              $('input[name="power"]').css({'display': 'none'}).removeClass('active');
+              $('select[name="mask"]').css({'display': 'none'}).removeClass('active');
+              $('select[name="depth-mask"]').css({'display': 'none'}).removeClass('active');
+          }
+        }
+        switch($('select[name="mask"].active').val()) {
+            case 'high-frequency':
+            case 'low-frequency':
+            case 'gaussian-blur':
+              $('select[name="depth-mask"]').css({'display': 'inline-block'}).addClass('active');
+              break;
+            default:
+            $('select[name="depth-mask"]').css({'display': 'none'}).removeClass('active');
+          }
+        $('select[name="mask"].active').on('change', function(e) {
+          switch($(this).val()) {
+            case 'high-frequency':
+            case 'low-frequency':
+            case 'gaussian-blur':
+              $('select[name="depth-mask"]').css({'display': 'inline-block'});
+              break;
+            default:
+            $('select[name="depth-mask"]').css({'display': 'none'});
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
