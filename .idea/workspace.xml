@@ -12,12 +12,13 @@
     <session id="949407526">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="18" />
+          <entry key="project.closed" value="19" />
           <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.14" value="1" />
           <entry key="project.open.time.15" value="3" />
           <entry key="project.open.time.16" value="2" />
           <entry key="project.open.time.17" value="1" />
+          <entry key="project.open.time.18" value="1" />
           <entry key="project.open.time.19" value="1" />
           <entry key="project.open.time.20" value="1" />
           <entry key="project.open.time.23" value="1" />
@@ -28,7 +29,7 @@
           <entry key="project.open.time.62" value="1" />
           <entry key="project.open.time.69" value="1" />
           <entry key="project.open.time.71" value="1" />
-          <entry key="project.opened" value="18" />
+          <entry key="project.opened" value="19" />
         </counts>
       </usages-collector>
     </session>
@@ -113,16 +114,17 @@
       <workItem from="1551871300082" duration="596000" />
       <workItem from="1552947258469" duration="74000" />
       <workItem from="1552947828419" duration="597000" />
+      <workItem from="1552979120582" duration="598000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7666000" />
+    <option name="totallyTimeSpent" value="8264000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="55" y="30" width="1311" height="738" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.34099922" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3473434" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />

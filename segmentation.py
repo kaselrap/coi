@@ -7,11 +7,10 @@ import random
 from collections import defaultdict
 import operator
 
-im = Image.open('./static/images/normal_photo_2018-07-23_14-37-21.jpg')
+im = Image.open('./input.jpg')
 arr = np.asarray(im)
 
-out = Image.open('./static/images/out_normal_photo_2018-07-23_14-37-21.jpg').convert('L')
-arr_out = np.asarray(out)
+arr_out = np.asarray(im.convert('L'))
 
 rows,columns = np.shape(arr_out)
 print('background pixel level',arr_out[0][0])
@@ -29,10 +28,6 @@ for i in range(rows):
 
 		else:
 			ground_out[i][j] = 1
-
-plt.figure()
-plt.imshow(ground_out, cmap="Greys_r")
-plt.show()
 
 
 shape = np.shape(arr)
@@ -153,48 +148,6 @@ for i in range(rows):
 
 		else:
 			result[i][j] = 0
-
-
-''' ********************************** Calculation of Tpr, Fpr, F-Score ***************************************************'''
-
-
-tp = 0
-tn = 0
-fn = 0
-fp = 0
-
-for i in range(rows):
-	for j in range(columns):
-		if ground_out[i][j] == 1 and result[i][j] == 1:
-			tp = tp + 1
-		if ground_out[i][j] == 0 and result[i][j] == 0:
-			tn = tn + 1
-		if ground_out[i][j] == 1 and result[i][j] == 0:
-			fn = fn + 1
-		if ground_out[i][j] == 0 and result[i][j] == 1:
-			fp = fp + 1
-
-
-
-print('\n************Calculation of Tpr, Fpr, F-Score********************')
-
-#TP rate = TP/TP+FN
-tpr= float(tp)/(tp+fn)
-print("\nTPR is:",tpr)
-
-#fp rate is
-fpr= float(fp)/(fp+tn)
-print("\nFPR is:",fpr)
-
-#F-score as 2TP/(2TP + FP + FN)
-fscore = float(2*tp)/((2*tp)+fp+fn)
-print("\nFscore:",fscore)
-
-
-plt.figure()
-plt.imshow(end)
-plt.show()
-
 
 '''displaying the clusters in different gray scale levels'''
 plt.figure()

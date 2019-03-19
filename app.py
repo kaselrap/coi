@@ -102,7 +102,7 @@ def resize(image, src, power):
         cv2.imwrite(src, zoomOutImage)
 
 def brightness(image, value=1):
-    return img * value
+    return image * value
 
 def otsu(gray):
     pixel_number = gray.shape[0] * gray.shape[1]
@@ -501,12 +501,12 @@ def upload_file():
                     'index.html', image = '/static/images/salt_and_pepper_' + filename)
             elif select == 'gauss-noize':
                 cv2.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'gauss'+ request.form.get('power') +'_' + filename),
-                    gauss(arrayOfPixels), int(request.form.get('power')))
+                    gauss(arrayOfPixels, int(request.form.get('power'))))
                 return render_template(
                     'index.html', image = '/static/images/gauss'+ request.form.get('power') +'_' + filename)
             elif select == 'brightness':
                 cv2.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'brightness_'+ request.form.get('power') +'_' + filename),
-                brightness(arrayOfPixels), float(request.form.get('power')))
+                brightness(arrayOfPixels, float(request.form.get('power'))))
                 return render_template(
                     'index.html', image = '/static/images/brightness_'+ request.form.get('power') +'_' + filename)
             elif select == 'zoom':
