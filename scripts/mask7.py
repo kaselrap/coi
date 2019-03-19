@@ -46,22 +46,18 @@ elif str(sys.argv[3]) == 'gaussian-blur':
     1, 1, 1, 1, 1, 1, 1,
   ]
   kern = np.sum(mask)
-# elif str(sys.argv[3]) == 'embossing':
-#   mask = [0, -1, 0, -1, 4, -1, 0, -1, 0]
-#   kern = 1
-#   add = 128
-# elif str(sys.argv[3]) == 'vertical-linear':
-#   mask = [-3, -3, 5, -3, 0, 5, -3, -3, 5]
-#   kern = 1
-# elif str(sys.argv[3]) == 'horizontal-linear':
-#   mask = [1, 2, 1, 0, 0, 0, -1, -2, -1]
-#   kern = 1
-# elif str(sys.argv[3]) == 'diagonal':
-#   mask = [-3, -3, -3, 5, 0, -3, 5, 5, -3]
-#   kern = 1
-# elif str(sys.argv[3]) == 'laplasa':
-#   mask = [1, 1, 1, 1, -8, 1, 1, 1, 1]
-#   kern = 1
+elif str(sys.argv[3]) == 'embossing':
+  mask = [
+    1, 1,   1,  1,  1,  1,  0,
+    1, 1,   1,  1,  1,  0, -1,
+    1, 1,   1,  1,  0, -1, -1,
+    1, 1,   1,  1, -1, -1, -1,
+    1, 1,   0, -1, -1, -1, -1,
+    1, 0,  -1, -1, -1, -1, -1,
+    0, -1, -1, -1, -1, -1, -1,
+  ]
+  kern = 1
+  add = 128
 else:
   mask = [1, 1, 1, 1, 1, 1, 1, 1, 1]
   kern = np.sum(mask) / 2

@@ -5,7 +5,6 @@ import timeit
 import random
 import json
 import math
-from PIL import Image
 from flask import Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 ##Remove all images from folder
@@ -27,19 +26,20 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.add_url_rule('/static/images/<filename>', 'uploaded_file',
                  build_only=True)
 
-def contrast(grayscale):
+def contrast(arrayOfPixels):
+    grayscale = rgb2gray(arrayOfPixels)
     histogram = getHistogram(grayscale)
-    height, width = grayscale.shape
+    height, width, depth = arrayOfPixels.shape
 
     minH = np.amin(grayscale)
     maxH = np.amax(grayscale)
 
-    final = np.zeros((height, width))
+    final = np.zeros((height, width, depth))
 
     for row in range(height):
         for col in range(width):
-            final[row][col] = ((grayscale[row][col] - minH) / (maxH - minH) * 255)
-    
+            final[row][col] = ((arrayOfPixels[row][col] - minH) / (maxH - minH) * 255)
+
     return final
 
 def resize(image, src, power):
@@ -167,17 +167,44 @@ def getHistogram(array):
 
   return countOfRepeat
 
-def median_filter(grayscaleImgae):
-    height, width = grayscaleImgae.shape
-    outfile = np.zeros(grayscaleImgae.shape)
+def median_filter(image, depth_mask):
+    grayscaleImgae = getImage(image)
+    height, width, depth = grayscaleImgae.shape
+    outfile = np.zeros((height, width, depth))
 
-    for row in range(1, height-1):
-        for col in range(1, width-1):
-            matrix = np.array([
-                [grayscaleImgae[row-1][col-1], grayscaleImgae[row-1][col], grayscaleImgae[row-1][col+1]],
-                [grayscaleImgae[row][col-1], grayscaleImgae[row][col], grayscaleImgae[row][col+1]],
-                [grayscaleImgae[row+1][col-1], grayscaleImgae[row+1][col], grayscaleImgae[row+1][col+1]]
-            ])
+    if depth_mask == '5':
+        forrange = 2
+    elif depth_mask == '7':
+        forrange = 3
+    else:
+        forrange = 1
+
+    for row in range(forrange, height - forrange):
+        for col in range(forrange, width - forrange):
+            if depth_mask == '5':
+                matrix = np.array([
+                    [grayscaleImgae[row-2][col-2], grayscaleImgae[row-2][col-1], grayscaleImgae[row-2][col], grayscaleImgae[row-2][col+1], grayscaleImgae[row-2][col+2]],
+                    [grayscaleImgae[row-1][col-2], grayscaleImgae[row-1][col-1], grayscaleImgae[row-1][col], grayscaleImgae[row-1][col+1], grayscaleImgae[row-1][col+2]],
+                    [grayscaleImgae[row][col-2], grayscaleImgae[row][col-1], grayscaleImgae[row][col], grayscaleImgae[row][col+1], grayscaleImgae[row][col+2]],
+                    [grayscaleImgae[row+1][col-2], grayscaleImgae[row+1][col-1], grayscaleImgae[row+1][col], grayscaleImgae[row+1][col+1], grayscaleImgae[row+1][col+2]],
+                    [grayscaleImgae[row+2][col-2], grayscaleImgae[row+2][col-1], grayscaleImgae[row+2][col], grayscaleImgae[row+2][col+1], grayscaleImgae[row+2][col+2]],
+                ])
+            elif depth_mask == '7':
+                matrix = np.array([
+                    [grayscaleImgae[row-3][col-3], grayscaleImgae[row-3][col-2], grayscaleImgae[row-3][col-1], grayscaleImgae[row-3][col], grayscaleImgae[row-3][col+1], grayscaleImgae[row-3][col+2], grayscaleImgae[row-3][col+3]],
+                    [grayscaleImgae[row-2][col-3], grayscaleImgae[row-2][col-2], grayscaleImgae[row-2][col-1], grayscaleImgae[row-2][col], grayscaleImgae[row-2][col+1], grayscaleImgae[row-2][col+2], grayscaleImgae[row-2][col+3]],
+                    [grayscaleImgae[row-1][col-3], grayscaleImgae[row-1][col-2], grayscaleImgae[row-1][col-1], grayscaleImgae[row-1][col], grayscaleImgae[row-1][col+1], grayscaleImgae[row-1][col+2], grayscaleImgae[row-1][col+3]],
+                    [grayscaleImgae[row][col-3], grayscaleImgae[row][col-2], grayscaleImgae[row][col-1], grayscaleImgae[row][col], grayscaleImgae[row][col+1], grayscaleImgae[row][col+2], grayscaleImgae[row][col+3]],
+                    [grayscaleImgae[row+1][col-3], grayscaleImgae[row+1][col-2], grayscaleImgae[row+1][col-1], grayscaleImgae[row+1][col], grayscaleImgae[row+1][col+1], grayscaleImgae[row+1][col+2], grayscaleImgae[row+1][col+3]],
+                    [grayscaleImgae[row+2][col-3], grayscaleImgae[row+2][col-2], grayscaleImgae[row+2][col-1], grayscaleImgae[row+2][col], grayscaleImgae[row+2][col+1], grayscaleImgae[row+2][col+2], grayscaleImgae[row+2][col+3]],
+                    [grayscaleImgae[row+3][col-3], grayscaleImgae[row+3][col-2], grayscaleImgae[row+3][col-1], grayscaleImgae[row+3][col], grayscaleImgae[row+3][col+1], grayscaleImgae[row+3][col+2], grayscaleImgae[row+3][col+3]],
+                ])
+            else:
+                matrix = np.array([
+                    [grayscaleImgae[row-1][col-1], grayscaleImgae[row-1][col], grayscaleImgae[row-1][col+1]],
+                    [grayscaleImgae[row][col-1], grayscaleImgae[row][col], grayscaleImgae[row][col+1]],
+                    [grayscaleImgae[row+1][col-1], grayscaleImgae[row+1][col], grayscaleImgae[row+1][col+1]]
+                ])
 
             sortedMatrix = np.sort(matrix, axis=None)
             outfile[row][col] = sortedMatrix[int(len(sortedMatrix)/2)]
@@ -287,11 +314,30 @@ def mask_filter(grayscaleImgae, mask_type, depth_mask = '1') :
             mask = [1, 2, 1, 2, 4, 2, 1, 2, 1]
         kern = np.sum(mask)
     elif str(mask_type) == 'embossing':
-        mask = [
-        0, -1, 0, 
-        -1, 4, -1, 
-        0, -1, 0]
-        
+        if depth_mask == '5':
+            mask = [
+                1,  1,  1,  1,  0,
+                1,  1,  1,  0, -1,
+                1,  1,  1, -1, -1,
+                1,  0, -1, -1, -1,
+                0, -1, -1, -1, -1
+            ]
+        elif depth_mask == '7':
+           mask = [
+                1, 1,   1,  1,  1,  1,  0,
+                1, 1,   1,  1,  1,  0, -1,
+                1, 1,   1,  1,  0, -1, -1,
+                1, 1,   1,  1, -1, -1, -1,
+                1, 1,   0, -1, -1, -1, -1,
+                1, 0,  -1, -1, -1, -1, -1,
+                0, -1, -1, -1, -1, -1, -1,
+            ]
+        else:
+            mask = [
+            0, -1, 0, 
+            -1, 4, -1, 
+            0, -1, 0]
+    
         kern = 1
         add = 128
     elif str(mask_type) == 'vertical-linear':
@@ -491,7 +537,7 @@ def upload_file():
                 return render_template(
                     'index.html', image = '/static/images/otsu_' + filename)
             elif select == 'contrast':
-                cv2.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'contrast_' + filename), contrast(grayScaleImage))
+                cv2.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'contrast_' + filename), contrast(arrayOfPixels))
                 return render_template(
                     'index.html', image = '/static/images/contrast_' + filename)
             elif select == 'salt_and_pepper':
@@ -546,14 +592,22 @@ def upload_file():
                     image = '/static/images/' + select + '_' + filename
                 )
             elif select == 'median':
+                if request.form.get('depth-mask') == '3':
+                    depthMask = '1'
+                elif request.form.get('depth-mask') == '5':
+                    depthMask = '5'
+                elif request.form.get('depth-mask') == '7':
+                    depthMask = '7'
+                else:
+                    depthMask = '1'
                 cv2.imwrite(
-                    os.path.join(app.config['UPLOAD_FOLDER'], 'median_' + filename),
-                    median_filter(grayScaleImage)
+                    os.path.join(app.config['UPLOAD_FOLDER'], 'median_' + depthMask + '-' + filename),
+                    median_filter(os.path.join(app.config['UPLOAD_FOLDER'],'normal_' + filename), depthMask)
                 )
 
                 return render_template(
                     'index.html',
-                    image = '/static/images/median_' + filename
+                    image = '/static/images/median_' + depthMask + '-' + filename
                 )
             else:
                 return render_template(

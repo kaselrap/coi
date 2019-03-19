@@ -54,6 +54,9 @@
         showPowerInput($('select[name="task"]').val());
         $('select[name="task"]').on('change', function(e) {
           showPowerInput($(this).val());
+          if ($(this).val() === 'median') {
+            $('select[name="depth-mask"]').css({'display': 'inline-block'});
+          }
         });
         function showPowerInput(val) {
           switch(val) {
@@ -86,6 +89,7 @@
             case 'high-frequency':
             case 'low-frequency':
             case 'gaussian-blur':
+            case 'embossing':
               $('select[name="depth-mask"]').css({'display': 'inline-block'}).addClass('active');
               break;
             default:

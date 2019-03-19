@@ -1,13 +1,12 @@
 import math 
+import numpy as np
 from PIL import Image
 from pylab import *
-import matplotlib.cm as cm
-import scipy as sp
 import random
 from collections import defaultdict
 import operator
 
-im = Image.open('./input.jpg')
+im = Image.open('./input2.jpg')
 arr = np.asarray(im)
 
 arr_out = np.asarray(im.convert('L'))

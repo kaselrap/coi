@@ -34,15 +34,15 @@ def getHistogram(array):
 arrayOfPixels = getImage(FILE_NAME)
 grayscale = toGrayScale(arrayOfPixels)
 histogram = getHistogram(grayscale)
-height, width = grayscale.shape
+height, width, depth = arrayOfPixels.shape
 
 minH = np.amin(grayscale)
 maxH = np.amax(grayscale)
 
-newArr = np.zeros((height, width))
+lol = np.zeros((height, width, depth))
 
 for row in range(height):
   for col in range(width):
-    newArr[row][col] = ((grayscale[row][col] - minH) / (maxH - minH) * 255)
+    lol[row][col] = ((arrayOfPixels[row][col] - minH) / (maxH - minH) * 255)
 
-cv2.imwrite(FILE_NAME_CONTRAST, newArr)
+cv2.imwrite(FILE_NAME_CONTRAST, lol)
